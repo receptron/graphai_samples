@@ -44,7 +44,6 @@ nodes:
       namedInputs:
         - messages
         - context
-    isResult: true
     graph:
       loop:
         count: 6
@@ -52,11 +51,10 @@ nodes:
         messages:
           value: []
           update: :swappedMessages
-          isResult: true
         context:
           value: {}
           update: :swappedContext
-        groq:
+        llm:
           agent: groqAgent
           params:
             model: Llama3-8b-8192
@@ -70,13 +68,13 @@ nodes:
           console:
             after: true
           inputs:
-            - :groq.choices.$0.message.content
+            - :llm.choices.$0.message.content
             - :context.person0.name
         reducer:
           agent: pushAgent
           inputs:
             - :messages
-            - :groq.choices.$0.message
+            - :llm.choices.$0.message
         swappedContext:
           agent: propertyFilterAgent
           params:
