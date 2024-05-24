@@ -8,7 +8,6 @@ nodes:
   messages:
     value: []
     update: :reducer
-    isResult: true
   userInput:
     agent: textInputAgent
     params:
@@ -36,7 +35,7 @@ nodes:
     inputs:
       - :messages
       - :userMessage
-  groq:
+  llm:
     agent: openAIAgent
     inputs:
       - null
@@ -48,9 +47,9 @@ nodes:
     console:
       after: true
     inputs:
-      - :groq.choices.$0.message.content
+      - :llm.choices.$0.message.content
   reducer:
     agent: pushAgent
     inputs:
       - :appendedMessages
-      - :groq.choices.$0.message
+      - :llm.choices.$0.message
