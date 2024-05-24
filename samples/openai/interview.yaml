@@ -44,7 +44,6 @@ nodes:
       namedInputs:
         - messages
         - context
-    isResult: true
     graph:
       loop:
         count: 6
@@ -52,7 +51,6 @@ nodes:
         messages:
           value: []
           update: :swappedMessages
-          isResult: true
         context:
           value: {}
           update: :swappedContext
