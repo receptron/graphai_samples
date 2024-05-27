@@ -24,8 +24,8 @@ GOOGLE_GENAI_API_KEY=AI...
 After that you can run those GraphAI YAML files like below.
 
 ```
-graphai openai/chat.ts # if you place .env file under the samples folder
-graphai chat.ts # if you place .env file under the samples/openai folder.
+graphai openai/chat.yaml # if you place .env file under the samples folder
+graphai chat.yaml # if you place .env file under the samples/openai folder.
 ```
 
 ## Samples
