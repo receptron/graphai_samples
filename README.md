@@ -49,3 +49,7 @@ This application acquires the name, date of birth and gender from the user, and 
 ### metachat.yaml
 
 This application dynamically generates an AI agentapp, which acquires the name, address and phone number from the user, using the reception.yaml as an example.
+
+### wikipedia_rag.yaml
+
+This appilcation performs an in-memory RAG using a Wikipedia article as the data source. 
