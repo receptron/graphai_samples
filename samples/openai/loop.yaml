@@ -4,15 +4,22 @@ nodes:
     value: [apple, lemomn, banana]
   shift:
     agent: shiftAgent
-    console:
-      before: true
-      after: true
-    inputs:
-      - :fruits
-  foo:
+    inputs: [:fruits]
+  prompt:
+    agent: stringTemplateAgent
+    params:
+      template: What is the typical color of ${0}? Just answer the color.
+    inputs: [:shift.item]
+  llm:
+    agent: openAIAgent
+    params:
+      model: llama3
+      baseURL: http://127.0.0.1:11434/v1
+      apiKey: ollama
+    inputs: [:prompt]
+  result:
     agent: copyAgent
     console:
-      before: true
       after: true
     inputs:
-      - :shift.item
+      - :llm.choices.$0.message.content
