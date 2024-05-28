@@ -1,0 +1,16 @@
+version: 0.3
+nodes:
+  prompt:
+    value: Explain ML's transformer in 100 words.
+  llm:
+    agent: openAIAgent
+    params:
+      model: gpt-4o
+    inputs:
+      - :prompt
+  output:
+    agent: copyAgent
+    console:
+      after: true
+    inputs:
+      - :llm.choices.$0.message.content

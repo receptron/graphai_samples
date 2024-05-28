@@ -1,0 +1,21 @@
+version: 0.3
+nodes:
+  fruits:
+    value:
+      - apple
+      - lemon
+      - banana
+  shift:
+    agent: shiftAgent
+    console:
+      before: true
+      after: true
+    inputs:
+      - :fruits
+  foo:
+    agent: copyAgent
+    console:
+      before: true
+      after: true
+    inputs:
+      - :shift.item
