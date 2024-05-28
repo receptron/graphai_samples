@@ -16,9 +16,7 @@ nodes:
         llm:
           agent: openAIAgent
           params:
-            model: llama3
-            baseURL: http://127.0.0.1:11434/v1
-            apiKey: ollama
+            model: gpt-4o
           inputs: [:prompt]
         result:
           agent: copyAgent
