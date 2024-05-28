@@ -1,7 +1,14 @@
 version: 0.3
+loop:
+  while: :fruits
 nodes:
   fruits:
     value: [apple, lemomn, banana]
+    update: :shift.array
+  result:
+    value: []
+    update: :reducer
+    isResult: true
   shift:
     agent: shiftAgent
     inputs: [:fruits]
@@ -17,9 +24,8 @@ nodes:
       baseURL: http://127.0.0.1:11434/v1
       apiKey: ollama
     inputs: [:prompt]
-  result:
-    agent: copyAgent
-    console:
-      after: true
+  reducer:
+    agent: pushAgent
     inputs:
+      - :result
       - :llm.choices.$0.message.content
