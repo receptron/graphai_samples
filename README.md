@@ -55,3 +55,7 @@ This application dynamically generates an AI agentapp, which acquires the name, 
 This appilcation performs an in-memory RAG using a Wikipedia article as the data source. 
 
 **NOTE**: Because this application uses OpenAI's embeddings API, OPENAI_API_KEY is required even if you pick a non-OpenAI LLM. 
+
+## More Samples
+
+More samples for developer is [here](https://github.com/receptron/graphai/tree/main/packages/samples).
