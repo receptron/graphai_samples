@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 loop:
   while: :continue
 nodes:
@@ -33,17 +33,16 @@ nodes:
   appendedMessages:
     agent: pushAgent
     inputs:
-      - :messages
-      - :userMessage
+      array: :messages
+      item: :userMessage
   llm:
     agent: geminiAgent
     inputs:
-      - null
-      - :appendedMessages
+      messages: :appendedMessages
   output:
     agent: stringTemplateAgent
     params:
-      template: "\e[32mLlama3\e[0m: ${0}"
+      template: "\e[32mGemini\e[0m: ${0}"
     console:
       after: true
     inputs:
@@ -51,5 +50,5 @@ nodes:
   reducer:
     agent: pushAgent
     inputs:
-      - :appendedMessages
-      - :llm.choices.$0.message
+      array: :appendedMessages
+      item: :llm.choices.$0.message
