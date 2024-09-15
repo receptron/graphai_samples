@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 nodes:
   name:
     agent: textInputAgent
@@ -38,12 +38,8 @@ nodes:
   chat:
     agent: nestedAgent
     inputs:
-      - :messages
-      - :context
-    params:
-      namedInputs:
-        - messages
-        - context
+      messages: :messages
+      context: :context
     graph:
       loop:
         count: 6
@@ -57,8 +53,7 @@ nodes:
         llm:
           agent: openAIAgent
           inputs:
-            - null
-            - :messages
+            messages: :messages
         output:
           agent: stringTemplateAgent
           params:
@@ -71,8 +66,8 @@ nodes:
         reducer:
           agent: pushAgent
           inputs:
-            - :messages
-            - :llm.choices.$0.message
+            array: :messages
+            item: :llm.choices.$0.message
         swappedContext:
           agent: propertyFilterAgent
           params:
