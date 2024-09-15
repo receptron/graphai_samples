@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 loop:
   while: :fruits
 nodes:
@@ -11,7 +11,8 @@ nodes:
     isResult: true
   shift:
     agent: shiftAgent
-    inputs: [:fruits]
+    inputs:
+      array: :fruits
   prompt:
     agent: stringTemplateAgent
     params:
@@ -21,9 +22,10 @@ nodes:
     agent: openAIAgent
     params:
       model: gpt-4o
-    inputs: [:prompt]
+    inputs:
+      prompt: :prompt
   reducer:
     agent: pushAgent
     inputs:
-      - :result
-      - :llm.choices.$0.message.content
+      array: :result
+      item: :llm.choices.$0.message.content
