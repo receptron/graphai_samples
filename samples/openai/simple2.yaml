@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 nodes:
   prompt:
     value: Explain ML's transformer in 100 words.
@@ -7,7 +7,7 @@ nodes:
     params:
       model: gpt-4o
     inputs:
-      - :prompt
+      prompt: :prompt
   output:
     agent: copyAgent
     console:
