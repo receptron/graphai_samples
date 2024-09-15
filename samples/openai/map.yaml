@@ -1,10 +1,11 @@
-version: 0.3
+version: 0.5
 nodes:
   fruits:
     value: [apple, lemomn, banana]
   map:
     agent: mapAgent
-    inputs: [:fruits]
+    inputs:
+      rows: :fruits
     isResult: true
     graph:
       nodes:
@@ -12,12 +13,13 @@ nodes:
           agent: stringTemplateAgent
           params:
             template: What is the typical color of ${0}? Just answer the color.
-          inputs: [:$0]
+          inputs: [:row]
         llm:
           agent: openAIAgent
           params:
             model: gpt-4o
-          inputs: [:prompt]
+          inputs:
+            prompt: :prompt
         result:
           agent: copyAgent
           inputs: [:llm.choices.$0.message.content]

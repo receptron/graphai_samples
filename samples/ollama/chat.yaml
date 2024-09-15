@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 loop:
   while: :continue
 nodes:
@@ -33,8 +33,8 @@ nodes:
   appendedMessages:
     agent: pushAgent
     inputs:
-      - :messages
-      - :userMessage
+      array: :messages
+      item: :userMessage
   llm:
     agent: openAIAgent
     params:
@@ -42,12 +42,11 @@ nodes:
       baseURL: http://127.0.0.1:11434/v1
       apiKey: ollama
     inputs:
-      - null
-      - :appendedMessages
+      messages: :appendedMessages
   output:
     agent: stringTemplateAgent
     params:
-      template: "\e[32mLlama3\e[0m: ${0}"
+      template: "\e[32mOllama\e[0m: ${0}"
     console:
       after: true
     inputs:
@@ -55,5 +54,5 @@ nodes:
   reducer:
     agent: pushAgent
     inputs:
-      - :appendedMessages
-      - :llm.choices.$0.message
+      array: :appendedMessages
+      item: :llm.choices.$0.message
