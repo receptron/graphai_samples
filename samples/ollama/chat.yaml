@@ -4,55 +4,43 @@ loop:
 nodes:
   continue:
     value: true
-    update: :checkInput.continue
+    update: :checkInput
   messages:
     value: []
-    update: :reducer
+    update: :reducer.array
+    isResult: true
   userInput:
     agent: textInputAgent
     params:
       message: "You:"
+      required: true
   checkInput:
-    agent: propertyFilterAgent
-    params:
-      inspect:
-        - propId: continue
-          notEqual: /bye
+    agent: compareAgent
     inputs:
-      - {}
-      - :userInput
-  userMessage:
-    agent: propertyFilterAgent
-    params:
-      inject:
-        - propId: content
-          from: 1
-    inputs:
-      - role: user
-      - :userInput
-  appendedMessages:
-    agent: pushAgent
-    inputs:
-      array: :messages
-      item: :userMessage
+      array:
+        - :userInput.text
+        - "!="
+        - /bye
   llm:
     agent: openAIAgent
     params:
       model: llama3
       baseURL: http://127.0.0.1:11434/v1
-      apiKey: ollama
     inputs:
-      messages: :appendedMessages
+      messages: :messages
+      prompt: :userInput.text
   output:
     agent: stringTemplateAgent
     params:
-      template: "\e[32mOllama\e[0m: ${0}"
+      template: "\e[32mAgent\e[0m: ${message}"
     console:
       after: true
     inputs:
-      - :llm.choices.$0.message.content
+      message: :llm.text
   reducer:
     agent: pushAgent
     inputs:
-      array: :appendedMessages
-      item: :llm.choices.$0.message
+      array: :messages
+      items:
+        - :userInput.message
+        - :llm.message

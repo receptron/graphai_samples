@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.5
 nodes:
   source:
     value:
@@ -10,7 +10,7 @@ nodes:
       before: ...fetching data from wikkpedia
     agent: wikipediaAgent
     inputs:
-      - :source.name
+      query: :source.name
     params:
       lang: en
   chunks:
@@ -18,70 +18,68 @@ nodes:
       before: ...splitting the article into chunks
     agent: stringSplitterAgent
     inputs:
-      - :wikipedia.content
-  embeddings:
+      text: :wikipedia.content
+  chunkEmbeddings:
     console:
       before: ...fetching embeddings for chunks
     agent: stringEmbeddingsAgent
     inputs:
-      - :chunks.contents
+      array: :chunks.contents
   topicEmbedding:
     console:
       before: ...fetching embedding for the topic
     agent: stringEmbeddingsAgent
     inputs:
-      - :source.topic
-  similarityCheck:
+      item: :source.topic
+  similarities:
     agent: dotProductAgent
     inputs:
-      - :embeddings
-      - :topicEmbedding.$0
+      matrix: :chunkEmbeddings
+      vector: :topicEmbedding.$0
   sortedChunks:
     agent: sortByValuesAgent
     inputs:
-      - :chunks.contents
-      - :similarityCheck
+      array: :chunks.contents
+      values: :similarities
   referenceText:
     agent: tokenBoundStringsAgent
     inputs:
-      - :sortedChunks
+      chunks: :sortedChunks
     params:
       limit: 5000
   prompt:
     agent: stringTemplateAgent
     inputs:
-      - :source.query
-      - :referenceText.content
+      prompt: :source.query
+      text: :referenceText.content
     params:
       template: |-
-        Using the following document, ${0}
+        Using the following document, ${text}
 
-        ${1}
+        ${prompt}
   RagQuery:
     console:
       before: ...performing the RAG query
     agent: openAIAgent
+    inputs:
+      prompt: :prompt
     params:
       model: llama3
       baseURL: http://127.0.0.1:11434/v1
-      apiKey: ollama
-    inputs:
-      - :prompt
   OneShotQuery:
     agent: openAIAgent
+    inputs:
+      prompt: :source.query
     params:
       model: llama3
       baseURL: http://127.0.0.1:11434/v1
-      apiKey: ollama
-    inputs:
-      - :source.query
   RagResult:
     agent: copyAgent
     inputs:
-      - :RagQuery.choices.$0.message.content
+      result: :RagQuery.text
     isResult: true
   OneShotResult:
     agent: copyAgent
     inputs:
-      - :OneShotQuery.choices.$0.message.content
+      result: :OneShotQuery.text
     isResult: true
