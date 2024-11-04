@@ -3,29 +3,27 @@ loop:
   while: :fruits
 nodes:
   fruits:
-    value: [apple, lemomn, banana]
+    value:
+      - apple
+      - lemomn
+      - banana
     update: :shift.array
   result:
     value: []
-    update: :reducer
+    update: :reducer.array
     isResult: true
   shift:
     agent: shiftAgent
     inputs:
       array: :fruits
-  prompt:
-    agent: stringTemplateAgent
-    params:
-      template: What is the typical color of ${0}? Just answer the color.
-    inputs: [:shift.item]
   llm:
     agent: openAIAgent
     params:
       model: gpt-4o
     inputs:
-      prompt: :prompt
+      prompt: What is the typical color of ${:shift.item}? Just answer the color.
   reducer:
     agent: pushAgent
     inputs:
       array: :result
-      item: :llm.choices.$0.message.content
+      item: :llm.text

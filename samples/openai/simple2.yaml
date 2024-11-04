@@ -10,7 +10,9 @@ nodes:
       prompt: :prompt
   output:
     agent: copyAgent
+    params:
+      namedKey: text
     console:
       after: true
     inputs:
-      - :llm.choices.$0.message.content
+      text: :llm.text

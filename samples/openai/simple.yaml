@@ -8,7 +8,9 @@ nodes:
       prompt: Explain ML's transformer in 100 words.
   output:
     agent: copyAgent
+    params:
+      namedKey: text
     console:
       after: true
     inputs:
-      - :llm.choices.$0.message.content
+      text: :llm.text

@@ -15,31 +15,22 @@ nodes:
             engage the audience, ask questions one by one, and respond to the
             answer before moving to the next topic.
         person1:
-          name: ${0}
-          system: You are ${0}.
-          greeting: Hi, I'm ${0}
+          name: ${name}
+          system: You are ${name}.
+          greeting: Hi, I'm ${name}
     inputs:
-      - :name
-  messages:
-    agent: propertyFilterAgent
-    params:
-      inject:
-        - index: 0
-          propId: content
-          from: 1
-        - index: 1
-          propId: content
-          from: 2
-    inputs:
-      - - role: system
-        - role: user
-      - :context.person0.system
-      - :context.person1.greeting
+      name:
+        - :name.text
   chat:
     agent: nestedAgent
     inputs:
-      messages: :messages
+      messages:
+        - role: system
+          content: :context.person0.system
+        - role: user
+          content: :context.person1.greeting
       context: :context
+    isResult: true
     graph:
       loop:
         count: 6
@@ -47,34 +38,33 @@ nodes:
         messages:
           value: []
           update: :swappedMessages
+          isResult: true
         context:
           value: {}
           update: :swappedContext
-        llm:
+        groq:
           agent: geminiAgent
+          params: {}
           inputs:
             messages: :messages
         output:
           agent: stringTemplateAgent
-          params:
-            template: "\e[32m${1}:\e[0m ${0}\n"
           console:
             after: true
           inputs:
-            - :llm.choices.$0.message.content
-            - :context.person0.name
+            text: "\e[32m${:context.person0.name}:\e[0m ${:groq.text}\n"
         reducer:
           agent: pushAgent
           inputs:
             array: :messages
-            item: :llm.choices.$0.message
+            item: :groq.message
         swappedContext:
           agent: propertyFilterAgent
           params:
             swap:
               person0: person1
           inputs:
-            - :context
+            item: :context
         swappedMessages:
           agent: propertyFilterAgent
           params:
@@ -87,5 +77,6 @@ nodes:
                 assistant: user
                 user: assistant
           inputs:
-            - :reducer
-            - :swappedContext.person0.system
+            array:
+              - :reducer.array
+              - :swappedContext.person0.system
